@@ -1,7 +1,58 @@
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import ReplyKeyboardMarkup, InlineKeyboardMarkup
+from dotenv import load_dotenv, find_dotenv
+import os
 
-bot = AsyncTeleBot('6309899359:AAF0nGsudYSuFxHqTcpj7wWaNmLnsBvtX8k')
+load_dotenv(find_dotenv())
+TOKEN = os.getenv('TOKEN')
+
+bot = AsyncTeleBot(TOKEN, parse_mode='HTML')
+
+@bot.message_handler(commands=['1'])
+async def rt(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<i>курсив</i>')
+
+@bot.message_handler(commands=['2'])
+async def rt2(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<b>жирный</b>')
+
+@bot.message_handler(commands=['3'])
+async def rt3(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<u>подчёркивание</u>')
+
+@bot.message_handler(commands=['4'])
+async def rt4(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<s>зачеркнутый</s>')
+
+@bot.message_handler(commands=['5'])
+async def rt5(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<code>для выделения кода</code>')
+
+@bot.message_handler(commands=['6'])
+async def rt6(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<pre>для выделения большого фрагмента кода</pre>')
+
+@bot.message_handler(commands=['7'])
+async def rt7(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<tg-spoiler>защита от спойлера</tg-spoiler>')
+
+@bot.message_handler(commands=['8'])
+async def rt8(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<a href="https://github.com/">ссылка</a>')
+
+@bot.message_handler(commands=['9'])
+async def rt9(message):
+    chat_id = message.from_user.id
+    await bot.send_message(chat_id, '<a href="tg://user?id=5794033915">my account</a>')
+
 @bot.message_handler(commands=['start'])
 async def send_welcome(message):
     await bot.reply_to(message, 'Привет')
@@ -57,6 +108,15 @@ async def start(message):
     markup.add(button2)
     markup.add(button3)
     await bot.send_message(chat_id, 'Первый вариант кнопок', reply_markup=markup)
+
+@bot.message_handler(commands=['timer'])
+async def timer(message):
+    chat_id = message.from_user.id
+    bot_message = await bot.send_message(chat_id, 'Таймер начался - 5 секунд')
+    for i in range(1, 6):
+        await asyncio.sleep(1)
+        await bot.edit_message_text(f'{5-i} секуунд прошло', chat_id, bot_message.id)
+    await bot.delete_message(chat_id, bot_message.id)
 
 @bot.message_handler(func=lambda message: True)
 async def echo(message):
